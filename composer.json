@@ -1,0 +1,21 @@
+{
+    "name": "conejerock/idempotency-bundle",
+    "description": "Check idempotency keys in headers/body/query requests",
+    "type": "symfony-bundle",
+    "require": {
+        "php": ">=7.4",
+        "symfony/framework-bundle": "7.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Conejerock\\IdempotencyBundle\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Juanjo Conejero",
+            "email": "juanjoconejero@gmail.com"
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+services:
+    idempotency.request_subscriber:
+        class: Conejerock\IdempotencyBundle\EventSubscriber\RequestSubscriber
+        tags:
+            - { name: kernel.event_subscriber }
