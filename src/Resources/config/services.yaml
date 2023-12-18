@@ -1,5 +1,14 @@
-services:
-    idempotency.request_subscriber:
-        class: Conejerock\IdempotencyBundle\EventSubscriber\RequestSubscriber
+services:            
+    idempotency.response_listener:
+        class: Conejerock\IdempotencyBundle\EventListener\ResponseListener
         tags:
-            - { name: kernel.event_subscriber }
+            - { name: kernel.event_listener, event: kernel.response, method: onIdempotentResponse, priority: 100  }
+        arguments:
+            $cacheInterface: '@cache.app'    
+                
+    idempotency.controller_listener:
+        class: Conejerock\IdempotencyBundle\EventListener\ControllerListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onIdempotentController, priority: 100  }
+        arguments:
+            $cacheInterface: '@cache.app'

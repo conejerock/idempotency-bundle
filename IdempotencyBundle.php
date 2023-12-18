@@ -12,6 +12,10 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 class IdempotencyBundle extends AbstractBundle
 {
+    public function __construct()
+    {
+    }
+
     public function getPath(): string
     {
         return __DIR__;
@@ -22,26 +26,19 @@ class IdempotencyBundle extends AbstractBundle
         $definition
             ->rootNode()
                 ->children()
-                    ->arrayNode('methods')
-                        ->scalarPrototype()->end()->defaultValue(['POST', 'PUT', 'DELETE'])
-                    ->end()
-                    ->arrayNode('extract_from')
-                        ->arrayPrototype()
-                        ->children()
-                            ->enumNode('scope')->values(['body', 'query', 'headers'])->defaultValue('headers')->end()
-                            ->scalarNode('location')->end()
-                            ->booleanNode('mandatory')->defaultFalse()->end()
-                        ->end()
-                    ->end()
+                    ->scalarNode('name')->end()
+                    ->arrayNode('methods')->scalarPrototype()->end()->defaultValue(['POST', 'PUT', 'DELETE'])->end()
+                    ->enumNode('scope')->values(['body', 'query', 'headers'])->defaultValue('headers')->end()
+                    ->scalarNode('location')->end()
+                    ->booleanNode('mandatory')->defaultFalse()->end()
                 ->end()
             ->end();
     }
 
-    public function loadExtension(array $config, ContainerConfigurator $configurator, ContainerBuilder $builder): void
+    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $loader = new YamlFileLoader($builder, new FileLocator(__DIR__ . '/src/Resources/config'));
         $loader->load('services.yaml');
-
-        $builder->getDefinition('idempotency.request_subscriber')->addArgument($config);
+        $builder->getDefinition('idempotency.controller_listener')->addArgument($config);
     }
 }

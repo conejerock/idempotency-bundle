@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Model;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class IdempotencyConfig
 {
     /**
@@ -10,8 +12,11 @@ class IdempotencyConfig
      * @param IdempotencyConfigExtractFrom[] $extractFrom
      */
     public function __construct(
-        private array $methods,
-        private array $extractFrom,
+        private string $name,
+        private array  $methods,
+        private string $scope,
+        private string $location,
+        private bool   $mandatory,
     )
     {
     }
@@ -19,9 +24,17 @@ class IdempotencyConfig
     public static function fromValues(array $values): self
     {
         return new self(
+            $values['name'],
             $values['methods'],
-            array_map(fn($i) => IdempotencyConfigExtractFrom::fromValues($i), $values['extract_from'])
+            $values['scope'],
+            $values['location'],
+            (bool)$values['mandatory'],
         );
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     /**
@@ -32,11 +45,27 @@ class IdempotencyConfig
         return $this->methods;
     }
 
-    /**
-     * @return IdempotencyConfigExtractFrom[]
-     */
-    public function getExtractFrom(): array
+    public function getScope(): string
     {
-        return $this->extractFrom;
+        return $this->scope;
+    }
+
+    public function getLocation(): string
+    {
+        return $this->location;
+    }
+
+    public function isMandatory(): bool
+    {
+        return $this->mandatory;
+    }
+
+    public function extractValue(Request $request): ?string
+    {
+        return match ($this->getScope()) {
+            'body' => $request->request->get($this->getLocation()),
+            'query' => $request->query->get($this->getLocation()),
+            'headers' => $request->headers->get($this->getLocation()),
+        };
     }
 }
