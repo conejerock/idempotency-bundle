@@ -5,6 +5,8 @@ namespace Conejerock\IdempotencyBundle\EventListener;
 
 use Conejerock\IdempotencyBundle\Model\Exceptions\IdempotentKeyIsMandatoryException;
 use Conejerock\IdempotencyBundle\Model\IdempotencyConfig;
+use Conejerock\IdempotencyBundle\Resources\Constants;
+use Conejerock\IdempotencyBundle\Utils\ScopesNormalizer;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -24,21 +26,16 @@ class ControllerListener
 
     public function onIdempotentController(ControllerEvent $event)
     {
-
-        $configMethods = $this->config->getMethods();
-        if (!in_array($event->getRequest()->getMethod(), $configMethods)) {
+        if (!$this->ensureMethods($event)) {
             return;
         }
 
-        $keyValue = $this->config->extractValue($event->getRequest());
-        if ($keyValue === null && $this->config->isMandatory()) {
-            throw new IdempotentKeyIsMandatoryException($this->config);
-        }
+        $keyValue = $this->getKeyValue($event);
         if (!$keyValue) {
             return;
         }
 
-        $idCache = 'x-idempotent-key-' . $this->config->getName() . "-$keyValue";
+        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . "-" . $this->config->getName() . "-" . $keyValue;
 
         /** @var Response|null $itemCached */
         $itemCached = $this->cacheInterface->get($idCache, fn() => null);
@@ -48,5 +45,23 @@ class ControllerListener
             $event->setController(fn() => $itemCached);
             $event->stopPropagation();
         }
+    }
+
+    public function getKeyValue(ControllerEvent $event): ?string
+    {
+        $keyValue = ScopesNormalizer::getNormalized($event->getRequest(), $this->config);
+        if ($keyValue === null && $this->config->isMandatory()) {
+            throw new IdempotentKeyIsMandatoryException($this->config);
+        }
+        return $keyValue;
+    }
+
+    public function ensureMethods(ControllerEvent $event): bool
+    {
+        $configMethods = $this->config->getMethods();
+        if (!in_array($event->getRequest()->getMethod(), $configMethods)) {
+            return false;
+        }
+        return true;
     }
 }

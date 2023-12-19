@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\EventListener;
 
+use Conejerock\IdempotencyBundle\Resources\Constants;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -23,30 +24,36 @@ class ResponseListener
             return $event;
         }
         foreach ($idempotencyHeaders as $key => $isCached) {
-            dump([$key => $isCached]);
             if ($isCached === 'cached') {
-                $event->getResponse()->headers->set('x-idempotent-cached-request', "true");
+                $event->getResponse()->headers->set(Constants::X_HEADER_CACHED_REQUEST, "true");
                 return $event->getResponse();
-            }else {
-                $this->cacheInterface->delete($key);
-                $this->cacheInterface->get($key,
-                    function () use ($event) {
-                        return new Response($event->getResponse()->getContent(), $event->getResponse()->getStatusCode(), $event->getResponse()->headers->all());
-                    });
+            } else {
+                $this->cacheResponse($key, $event);
             }
         }
-        $event->getResponse()->headers->set('x-idempotent-cached-request', "false");
+        $event->getResponse()->headers->set(Constants::X_HEADER_CACHED_REQUEST, "false");
         return $event->getResponse();
     }
 
     private static function searchIdempotentKeys(ResponseEvent $event): array
     {
-        $idempName = 'x-idempotent-key-';
         $headers = array_filter(
             $event->getRequest()->headers->all(),
-            fn($key) => str_contains($key, $idempName),
+            function ($key) {
+                return str_contains($key, Constants::PREFIX_INNER_IDEMPOTENT_KEY);
+            },
             ARRAY_FILTER_USE_KEY
         );
+
         return array_map(fn($i) => $i[0], $headers);
+    }
+
+    public function cacheResponse(int|string $key, ResponseEvent $event): void
+    {
+        $this->cacheInterface->delete($key);
+        $this->cacheInterface->get($key,
+            function () use ($event) {
+                return new Response($event->getResponse()->getContent(), $event->getResponse()->getStatusCode(), $event->getResponse()->headers->all());
+            });
     }
 }

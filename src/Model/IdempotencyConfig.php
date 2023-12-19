@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Model;
 
+use Conejerock\IdempotencyBundle\Utils\ScopesNormalizer;
 use Symfony\Component\HttpFoundation\Request;
 
 class IdempotencyConfig
@@ -58,14 +59,5 @@ class IdempotencyConfig
     public function isMandatory(): bool
     {
         return $this->mandatory;
-    }
-
-    public function extractValue(Request $request): ?string
-    {
-        return match ($this->getScope()) {
-            'body' => $request->request->get($this->getLocation()),
-            'query' => $request->query->get($this->getLocation()),
-            'headers' => $request->headers->get($this->getLocation()),
-        };
     }
 }
