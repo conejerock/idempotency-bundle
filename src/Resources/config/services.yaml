@@ -4,11 +4,20 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onIdempotentResponse, priority: 100  }
         arguments:
-            $cacheInterface: '@cache.app'    
+            $container: '@service_container'
                 
     idempotency.controller_listener:
         class: Conejerock\IdempotencyBundle\EventListener\ControllerListener
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onIdempotentController, priority: 100  }
         arguments:
-            $cacheInterface: '@cache.app'
+            $container: '@service_container'
+            
+    idempotency.extractor.body:
+        class: Conejerock\IdempotencyBundle\Extractor\BodyExtractor
+
+    idempotency.extractor.headers:
+        class: Conejerock\IdempotencyBundle\Extractor\HeadersExtractor   
+            
+    idempotency.extractor.query:
+        class: Conejerock\IdempotencyBundle\Extractor\QueryExtractor               

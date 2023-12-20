@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\EventListener;
 
+use Conejerock\IdempotencyBundle\Model\IdempotencyConfig;
 use Conejerock\IdempotencyBundle\Resources\Constants;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -11,10 +13,13 @@ use Symfony\Contracts\Cache\CacheInterface;
 class ResponseListener
 {
 
+    private CacheInterface $cacheInterface;
+
     public function __construct(
-        private CacheInterface $cacheInterface
+        private ContainerInterface $container
     )
     {
+        $this->cacheInterface = $this->container->get('cache.app');
     }
 
     public function onIdempotentResponse(ResponseEvent $event)
@@ -50,8 +55,8 @@ class ResponseListener
 
     public function cacheResponse(int|string $key, ResponseEvent $event): void
     {
-        $this->cacheInterface->delete($key);
-        $this->cacheInterface->get($key,
+        $this->cacheInterface->delete(strtolower($key));
+        $this->cacheInterface->get(strtolower($key),
             function () use ($event) {
                 return new Response($event->getResponse()->getContent(), $event->getResponse()->getStatusCode(), $event->getResponse()->headers->all());
             });

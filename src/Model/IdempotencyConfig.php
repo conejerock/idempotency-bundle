@@ -3,21 +3,18 @@ declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Model;
 
-use Conejerock\IdempotencyBundle\Utils\ScopesNormalizer;
+use Conejerock\IdempotencyBundle\Extractor\ScopesNormalizer;
 use Symfony\Component\HttpFoundation\Request;
 
 class IdempotencyConfig
 {
-    /**
-     * @param string[] $methods
-     * @param IdempotencyConfigExtractFrom[] $extractFrom
-     */
     public function __construct(
-        private string $name,
-        private array  $methods,
-        private string $scope,
-        private string $location,
-        private bool   $mandatory,
+        private string  $name,
+        private array   $methods,
+        private string  $scope,
+        private string  $location,
+        private ?string $extractorService,
+        private bool    $mandatory,
     )
     {
     }
@@ -29,6 +26,7 @@ class IdempotencyConfig
             $values['methods'],
             $values['scope'],
             $values['location'],
+            $values['extractor'] ?? null,
             (bool)$values['mandatory'],
         );
     }
@@ -54,6 +52,11 @@ class IdempotencyConfig
     public function getLocation(): string
     {
         return $this->location;
+    }
+
+    public function getExtractorService(): ?string
+    {
+        return $this->extractorService;
     }
 
     public function isMandatory(): bool
