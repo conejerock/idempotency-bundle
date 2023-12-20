@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -13,11 +14,12 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('idempotency');
         $rootNode = $treeBuilder->getRootNode();
+
         $rootNode
             ->children()
                 ->scalarNode('name')
                     ->isRequired()
-                    ->info('Name of idempotency key. Used to inner identify')
+                    ->info('Name of idempotency key used to identify')
                     ->cannotBeEmpty()
                     ->example('api')
                 ->end()
@@ -27,10 +29,13 @@ class Configuration implements ConfigurationInterface
                         ->validate()
                             ->ifNotInArray(["POST","PUT","PATCH","DELETE","GET","OPTIONS"])
                             ->thenInvalid('Invalid method - "%s"')
-                    ->end()
+                        ->end()
                     ->info('Allowed http methods: "POST", "PUT", "PATCH", "DELETE", "GET", "OPTIONS"')
                     ->example(['PATCH', 'PUT'])
                     ->end()
+                ->end()
+                ->scalarNode('extractor')
+                    ->info('Name of extractor service. It must be a class that inherits from "Conejerock\IdempotencyBundle\Extractor\AbastractExtrator". This will override "scope" attribute')
                 ->end()
                 ->enumNode('scope')
                     ->info('Scope from which the information will be extracted')

@@ -63,4 +63,14 @@ class ConfigurationTest extends TestCase
 
         $this->assertConfigurationIsInvalid([$config]);
     }
+
+    public function testValidExtractorService()
+    {
+        $config = [
+            'name' => 'api',
+            'extractor' => 'Conejerock\\IdempotencyBundle\\Tests\\Extractor\\CustomTestingExtractor',
+        ];
+
+        $this->assertConfigurationIsValid([$config]);
+    }
 }

@@ -7,6 +7,7 @@ use Conejerock\IdempotencyBundle\EventListener\ResponseListener;
 use Conejerock\IdempotencyBundle\Resources\Constants;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,7 @@ use Symfony\Contracts\Cache\CacheInterface;
 class ResponseListenerTest extends TestCase
 {
     protected EventDispatcher $dispatcher;
+    protected MockObject|ContainerInterface $container;
     protected MockObject|CacheInterface $cache;
     protected MockObject|HttpKernelInterface $kernel;
 
@@ -25,13 +27,16 @@ class ResponseListenerTest extends TestCase
     {
         $this->dispatcher = new EventDispatcher();
         $this->cache = $this->createMock(CacheInterface::class);
+        $this->container = $this->createMock(ContainerInterface::class);
         $this->kernel = $this->createMock(HttpKernelInterface::class);
+
+        $this->container->method('get')->with('cache.app')->willReturn($this->cache);
     }
 
 
     private function getDefaultListener()
     {
-        return new ResponseListener($this->cache);
+        return new ResponseListener($this->container);
     }
 
     public function testReturnCachedResponse(): void

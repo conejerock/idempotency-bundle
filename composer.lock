@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0ec5a4aa0c2ea1d018f02442ab2d03cd",
+    "content-hash": "d66dac2b3d1cb23d7e56f411e60e5f4c",
     "packages": [
         {
             "name": "psr/cache",
@@ -2143,6 +2143,72 @@
                 "source": "https://github.com/SymfonyTest/SymfonyConfigTest/tree/v5.1.0"
             },
             "time": "2023-11-16T08:05:30+00:00"
+        },
+        {
+            "name": "matthiasnoback/symfony-dependency-injection-test",
+            "version": "5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SymfonyTest/SymfonyDependencyInjectionTest.git",
+                "reference": "c2c0c142938977ec57c1165404ac53ea7466a3f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SymfonyTest/SymfonyDependencyInjectionTest/zipball/c2c0c142938977ec57c1165404ac53ea7466a3f4",
+                "reference": "c2c0c142938977ec57c1165404ac53ea7466a3f4",
+                "shasum": ""
+            },
+            "require": {
+                "matthiasnoback/symfony-config-test": "^5.0",
+                "php": "^8.1",
+                "symfony/config": "^5.4 || ^6.2 || ^7.0",
+                "symfony/dependency-injection": "^5.4 || ^6.2 || ^7.0",
+                "symfony/yaml": "^5.4 || ^6.2 || ^7.0"
+            },
+            "conflict": {
+                "phpunit/phpunit": "<9.6 || >=11.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6 || ^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Matthias\\SymfonyDependencyInjectionTest\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Library for testing user classes related to the Symfony Dependency Injection Component",
+            "homepage": "https://github.com/matthiasnoback/SymfonyDependencyInjectionTest",
+            "keywords": [
+                "Symfony2",
+                "dependency injection",
+                "dev",
+                "phpunit"
+            ],
+            "support": {
+                "issues": "https://github.com/SymfonyTest/SymfonyDependencyInjectionTest/issues",
+                "source": "https://github.com/SymfonyTest/SymfonyDependencyInjectionTest/tree/5.0.0"
+            },
+            "time": "2023-11-16T09:23:42+00:00"
         },
         {
             "name": "myclabs/deep-copy",
