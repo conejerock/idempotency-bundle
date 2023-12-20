@@ -1,33 +1,48 @@
 {
-    "name": "conejerock/idempotency-bundle",
-    "description": "Check idempotency keys in headers/body/query requests",
-    "homepage": "https://github.com/conejerock/idempotency-bundle",
-    "keywords": ["Symfony", "bundle", "idempotency", "cached", "requests"],
-    "type": "symfony-bundle",
-    "require": {
-        "php": ">=8.1",
-        "symfony/framework-bundle": "7.0.*"
-    },
-    "require-dev": {
-        "symfony/phpunit-bridge": "5.0.*",
-        "symfony/test-pack": "^1.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "Conejerock\\IdempotencyBundle\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Conejerock\\Tests\\IdempotencyBundle\\": "tests/",
-            "Conejerock\\IdempotencyBundle\\": "src/"
-        }
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Juanjo Conejero",
-            "email": "juanjoconejero@gmail.com"
-        }
-    ]
+  "name": "conejerock/idempotency-bundle",
+  "description": "Check idempotency keys in headers/body/query requests",
+  "homepage": "https://github.com/conejerock/idempotency-bundle",
+  "keywords": [
+    "Symfony",
+    "bundle",
+    "idempotency",
+    "cached",
+    "requests",
+    "symfony-bundle"
+  ],
+  "type": "symfony-bundle",
+  "require": {
+    "php": ">=8.1",
+    "symfony/framework-bundle": "7.0.*",
+      "ext-dom": "*",
+      "ext-json": "*",
+      "ext-libxml": "*",
+      "ext-mbstring": "*",
+      "ext-tokenizer": "*",
+      "ext-xml": "*",
+      "ext-xmlwriter": "*"
+  },
+  "require-dev": {
+    "symfony/phpunit-bridge": "5.0.*",
+    "symfony/test-pack": "^1.1",
+    "symfony/yaml": "^7.0",
+    "matthiasnoback/symfony-config-test": "^5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Conejerock\\IdempotencyBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Conejerock\\IdempotencyBundle\\Tests\\": "tests/"
+    }
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Juanjo Conejero",
+      "email": "juanjoconejero@gmail.com"
+    }
+  ]
 }
