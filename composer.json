@@ -12,7 +12,7 @@
   ],
   "type": "symfony-bundle",
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.2",
     "symfony/framework-bundle": "7.0.*"
   },
   "require-dev": {
