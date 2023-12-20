@@ -12,7 +12,7 @@
   ],
   "type": "symfony-bundle",
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.0",
     "symfony/framework-bundle": "7.0.*"
   },
   "require-dev": {
@@ -20,7 +20,8 @@
     "symfony/test-pack": "^1.1",
     "symfony/yaml": "^7.0",
     "matthiasnoback/symfony-config-test": "^5.1",
-    "matthiasnoback/symfony-dependency-injection-test": "^5.0"
+    "matthiasnoback/symfony-dependency-injection-test": "^5.0",
+    "pestphp/pest": "^1.23"
   },
   "autoload": {
     "psr-4": {
@@ -38,5 +39,15 @@
       "name": "Juanjo Conejero",
       "email": "juanjoconejero@gmail.com"
     }
-  ]
+  ],
+  "extra": {
+    "symfony": {
+      "allow-contrib": "true"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
 }
