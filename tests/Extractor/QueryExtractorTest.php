@@ -1,19 +1,18 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Tests\Extractor;
 
-use Conejerock\IdempotencyBundle\Extractor\BodyExtractor;
 use Conejerock\IdempotencyBundle\Extractor\QueryExtractor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 class QueryExtractorTest extends TestCase
 {
-
     private QueryExtractor $extractor;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->extractor = new QueryExtractor('idempotentKey');
     }
@@ -24,7 +23,6 @@ class QueryExtractorTest extends TestCase
         $key = $this->extractor->extract($request);
 
         $this->assertEquals('11111', $key);
-
     }
 
     public function testNoExtractFromQuery(): void
@@ -33,6 +31,5 @@ class QueryExtractorTest extends TestCase
         $key = $this->extractor->extract($request);
 
         $this->assertEquals(null, $key);
-
     }
 }

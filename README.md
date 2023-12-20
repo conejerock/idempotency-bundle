@@ -1,41 +1,41 @@
-Installation
+IdempotencyBundle
 ============
 
-Make sure Composer is installed globally, as explained in the
-[installation chapter](https://getcomposer.org/doc/00-intro.md)
-of the Composer documentation.
+This Symfony Bundle  provides a way to check idempotency keys in headers/body/query requests 
 
-Applications that use Symfony Flex
-----------------------------------
+It is compatible (and tested) with PHP 8.1+ on Symfony 5.x, 6.x and 7.x.
 
-Open a command console, enter your project directory and execute:
+[![codecov](https://codecov.io/gh/conejerock/idempotency-bundle/graph/badge.svg?token=3DJ60QQORW)](https://codecov.io/gh/conejerock/idempotency-bundle)
 
-```console
-$ composer require conejerock/idempotency-bundle
-```
+[![Latest Stable Version](http://poser.pugx.org/conejerock/idempotency-bundle/v)](https://packagist.org/packages/conejerock/idempotency-bundle) 
+[![Total Downloads](http://poser.pugx.org/conejerock/idempotency-bundle/downloads)](https://packagist.org/packages/conejerock/idempotency-bundle) 
+[![Latest Unstable Version](http://poser.pugx.org/conejerock/idempotency-bundle/v/unstable)](https://packagist.org/packages/conejerock/idempotency-bundle) 
+[![License](http://poser.pugx.org/conejerock/idempotency-bundle/license)](https://packagist.org/packages/conejerock/idempotency-bundle) 
+[![PHP Version Require](http://poser.pugx.org/conejerock/idempotency-bundle/require/php)](https://packagist.org/packages/conejerock/idempotency-bundle)
 
-Applications that don't use Symfony Flex
-----------------------------------------
 
-### Step 1: Download the Bundle
+Documentation
+------------
+The bulk of the documentation is stored in the [./docs](./docs/index.md) directory of this bundle:
 
-Open a command console, enter your project directory and execute the
-following command to download the latest stable version of this bundle:
+* [Getting started](./docs/index.md#getting-started)
+    * [Installation](./docs/index.md#installation)
+    * [Configuration](./docs/index.md#configuration)
+* [Further documentation](./docs/index.rst#further-documentation)
+    * [Configuration reference](./docs/1-configuration-reference.md)
+        * [Body scope](./docs/1-configuration-reference.md#body-scope)
+        * [Query scope](./docs/1-configuration-reference.md#query-scope)
+        * [Headers scope](./docs/1-configuration-reference.md#qheaders-scope)
+    * [Custom extractor](./docs/2-custom-extractor.md)
 
-```console
-$ composer require conejerock/idempotency-bundle
-```
 
-### Step 2: Enable the Bundle
 
-Then, enable the bundle by adding it to the list of registered bundles
-in the `config/bundles.php` file of your project:
+License
+-------------
+This package is available under the [MIT license](LICENSE).
 
-```php
-// config/bundles.php
 
-return [
-    // ...
-    Conejerock\IdempotencyBundle\IdempotencyBundle::class => ['all' => true],
-];
-```
+Support
+-------------
+If you think you found a bug or you have a feature idea to propose, feel free to open an issue
+**after looking** at the [contributing guide](CONTRIBUTING.md).

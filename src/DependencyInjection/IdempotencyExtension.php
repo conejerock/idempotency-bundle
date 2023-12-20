@@ -1,9 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\DependencyInjection;
 
-use Conejerock\IdempotencyBundle\Model\IdempotencyConfig;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -20,10 +20,12 @@ class IdempotencyExtension extends Extension
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
-        $container->getDefinition('idempotency.controller_listener')->addArgument($configRaw);
+        $container->getDefinition('idempotency.controller_listener')
+            ->addArgument($configRaw);
 
         foreach (['body', 'headers', 'query'] as $scope) {
-            $container->getDefinition("idempotency.extractor.$scope")->addArgument($configRaw['location']);
+            $container->getDefinition("idempotency.extractor.{$scope}")
+                ->addArgument($configRaw['location']);
         }
     }
 }

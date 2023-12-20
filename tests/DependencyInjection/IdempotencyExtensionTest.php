@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Tests\DependencyInjection;
@@ -13,17 +14,17 @@ class IdempotencyExtensionTest extends AbstractExtensionTestCase
         parent::setUp();
 
         $this->container->setParameter('kernel.bundles', [
-            'IdempotencyExtensionBundle' => true
+            'IdempotencyExtensionBundle' => true,
         ]);
     }
 
     public function testIsExtensionLoaded(): void
     {
         $this->container->setParameter('kernel.bundles', [
-            'IdempotencyExtensionBundle' => true
+            'IdempotencyExtensionBundle' => true,
         ]);
         $this->load([
-            'name' => 'api'
+            'name' => 'api',
         ]);
 
         $this->assertContainerBuilderHasService('idempotency.controller_listener');
@@ -34,9 +35,7 @@ class IdempotencyExtensionTest extends AbstractExtensionTestCase
 
     protected function getContainerExtensions(): array
     {
-        return [
-            new IdempotencyExtension(),
-        ];
+        return [new IdempotencyExtension()];
     }
 
     /**
@@ -45,7 +44,7 @@ class IdempotencyExtensionTest extends AbstractExtensionTestCase
     protected function getMinimalConfiguration(): array
     {
         return [
-            'name' => 'api'
+            'name' => 'api',
         ];
     }
 }

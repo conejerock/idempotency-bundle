@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of phpunit/php-code-coverage.
  *
@@ -9,7 +12,4 @@
  */
 require __DIR__ . '/../vendor/autoload.php';
 
-\define(
-    'TEST_FILES_PATH',
-    __DIR__ . \DIRECTORY_SEPARATOR . '_files' . \DIRECTORY_SEPARATOR
-);
+\define('TEST_FILES_PATH', __DIR__ . \DIRECTORY_SEPARATOR . '_files' . \DIRECTORY_SEPARATOR);
