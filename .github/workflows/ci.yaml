@@ -1,41 +1,31 @@
-name: Test Coverage PHP Package
+name: CI
+
 on: [pull_request]
 
 jobs:
-    symfony-tests:
+    build-test:
         runs-on: ubuntu-latest
         
-        strategy:
-            matrix:
-                operating-system: [ ubuntu-latest ]
-                php-versions: [ '8.2' ]
-        
-        name: P${{ matrix.php-versions }} - ${{ matrix.operating-system}}
-        
         steps:
-            - uses: actions/checkout@v2
-                      
-            -   name: Install PHP versions
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: ${{ matrix.php-versions }}
-                    
-            -   name: Install Dependencies
-                run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --ignore-platform-reqs
+            - name: Checkout Code
+              uses: actions/checkout@v2
 
-            -   name: Show dir
-                run: pwd
-            -   name: PHP Version
-                run: php --version
+            - name: Install composer and dependencies
+              uses: php-actions/composer@v6
 
-            -   name: Execute tests (Unit and Feature tests) via PestPHP
-                env:
-                    SESSION_DRIVER: array
-                run: ./vendor/bin/pest ./tests --coverage-clover clover.xml
+            - name: PHPUnit Tests
+              uses: php-actions/phpunit@v3
+              env:
+                  XDEBUG_MODE: coverage
+              with:
+                  bootstrap: vendor/autoload.php
+                  configuration: phpunit.xml
+                  php_extensions: xdebug
+                  args: tests --coverage-clover ./coverage.xml
 
-            -   name: Generate test coverage badge
-                uses: timkrase/phpunit-coverage-badge@v1.2.0
-                with:
-                    coverage_badge_path: '../../docs/badge-coverage.svg'
-                    push_badge: true
-                    repo_token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Upload to Codecov
+              uses: codecov/codecov-action@v2
+              with:
+                  token: ${{ secrets.CODE_COV_TOKEN }}
+                  files: ./coverage.xml
+                  verbose: true
