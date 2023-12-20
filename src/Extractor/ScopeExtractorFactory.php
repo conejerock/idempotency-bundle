@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Extractor;
@@ -14,5 +15,4 @@ class ScopeExtractorFactory
             default => throw new \Exception(sprintf('%s is not accepted in ScopeExtractorFactory::fromScope', $scope))
         };
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Tests\EventListener;
@@ -21,43 +22,24 @@ use Symfony\Contracts\Cache\CacheInterface;
 class ControllerListenerTest extends TestCase
 {
     protected EventDispatcher $dispatcher;
+
     protected MockObject|ContainerInterface $container;
+
     protected MockObject|CacheInterface $cache;
+
     protected MockObject|HttpKernelInterface $kernel;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->dispatcher = new EventDispatcher();
         $this->cache = $this->createMock(CacheInterface::class);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->kernel = $this->createMock(HttpKernelInterface::class);
 
-        $this->container->method('get')->with('cache.app')->willReturn($this->cache);
+        $this->container->method('get')
+            ->with('cache.app')
+            ->willReturn($this->cache);
     }
-
-
-    private function getDefaultListener(
-        ?string $name = null,
-        ?array  $methods = null,
-        ?string $scope = null,
-        ?string $location = null,
-        ?string $extractorService = null,
-        ?bool   $mandatory = null,
-    )
-    {
-        return new ControllerListener(
-            [
-                'name' => $name ?? 'api',
-                'methods' => $methods ?? ['POST', 'PUT', 'DELETE'],
-                'scope' => $scope ?? 'query',
-                'location' => $location ?? 'idemkey',
-                'extractor' => $extractorService ?? null,
-                'mandatory' => $mandatory ?? false
-            ],
-            $this->container
-        );
-    }
-
 
     public function testReturnNonCachedRequest(): void
     {
@@ -65,14 +47,16 @@ class ControllerListenerTest extends TestCase
         $this->dispatcher->addListener('onKernelController', [$listener, 'onIdempotentController']);
 
         $request = Request::create('http://localhost?idemkey=11111', 'POST');
-        $controller = fn() => new JsonResponse(['no-cached-response']);
+        $controller = fn () => new JsonResponse(['no-cached-response']);
         $event = new ControllerEvent($this->kernel, $controller, $request, 1);
 
-        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . "-api-11111";
-        $this->cache->method('get')->with($idCache, fn() => null)->willReturn(null);
+        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . '-api-11111';
+        $this->cache->method('get')
+            ->with($idCache, fn () => null)
+            ->willReturn(null);
 
         $this->dispatcher->dispatch($event, 'onKernelController');
-        $this->assertEquals("no-cached", $event->getRequest()->headers->get($idCache));
+        $this->assertEquals('no-cached', $event->getRequest()->headers->get($idCache));
         $this->assertFalse($event->isPropagationStopped());
         $this->assertSame($controller, $event->getController());
     }
@@ -83,14 +67,16 @@ class ControllerListenerTest extends TestCase
         $this->dispatcher->addListener('onKernelController', [$listener, 'onIdempotentController']);
 
         $request = Request::create('http://localhost?idemkey=11111', 'POST');
-        $controller = fn() => new JsonResponse(['no-cached-response']);
+        $controller = fn () => new JsonResponse(['no-cached-response']);
         $event = new ControllerEvent($this->kernel, $controller, $request, 1);
 
-        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . "-api-11111";
-        $this->cache->method('get')->with($idCache, fn() => null)->willReturn(new JsonResponse(['cached-response']));
+        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . '-api-11111';
+        $this->cache->method('get')
+            ->with($idCache, fn () => null)
+            ->willReturn(new JsonResponse(['cached-response']));
 
         $this->dispatcher->dispatch($event, 'onKernelController');
-        $this->assertEquals("cached", $event->getRequest()->headers->get($idCache));
+        $this->assertEquals('cached', $event->getRequest()->headers->get($idCache));
         $this->assertTrue($event->isPropagationStopped());
         $this->assertNotSame($controller, $event->getController());
     }
@@ -101,10 +87,10 @@ class ControllerListenerTest extends TestCase
         $this->dispatcher->addListener('onKernelController', [$listener, 'onIdempotentController']);
 
         $request = Request::create('http://localhost?idemkey=11111', 'GET');
-        $controller = fn() => new JsonResponse(['no-cached-response']);
+        $controller = fn () => new JsonResponse(['no-cached-response']);
         $event = new ControllerEvent($this->kernel, $controller, $request, 1);
 
-        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . "-api-11111";
+        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . '-api-11111';
 
         $this->dispatcher->dispatch($event, 'onKernelController');
         $this->assertNull($event->getRequest()->headers->get($idCache));
@@ -118,11 +104,13 @@ class ControllerListenerTest extends TestCase
         $this->dispatcher->addListener('onKernelController', [$listener, 'onIdempotentController']);
 
         $request = Request::create('http://localhost', 'POST');
-        $controller = fn() => new JsonResponse(['no-cached-response']);
+        $controller = fn () => new JsonResponse(['no-cached-response']);
         $event = new ControllerEvent($this->kernel, $controller, $request, 1);
 
-        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . "-api-11111";
-        $this->cache->method('get')->with($idCache, fn() => null)->willReturn(new JsonResponse(['cached-response']));
+        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . '-api-11111';
+        $this->cache->method('get')
+            ->with($idCache, fn () => null)
+            ->willReturn(new JsonResponse(['cached-response']));
 
         $this->dispatcher->dispatch($event, 'onKernelController');
         $this->assertNull($event->getRequest()->headers->get($idCache));
@@ -137,7 +125,7 @@ class ControllerListenerTest extends TestCase
         $this->dispatcher->addListener('onKernelController', [$listener, 'onIdempotentController']);
 
         $request = Request::create('http://localhost', 'POST');
-        $controller = fn() => new JsonResponse(['never-response']);
+        $controller = fn () => new JsonResponse(['never-response']);
         $event = new ControllerEvent($this->kernel, $controller, $request, 1);
 
         $this->dispatcher->dispatch($event, 'onKernelController');
@@ -145,23 +133,45 @@ class ControllerListenerTest extends TestCase
 
     public function testUseCustomClassExtractor(): void
     {
-        $listener = $this->getDefaultListener(
-            extractorService: CustomTestingExtractor::class
-        );
+        $listener = $this->getDefaultListener(extractorService: CustomTestingExtractor::class);
         $this->dispatcher->addListener('onKernelController', [$listener, 'onIdempotentController']);
 
         $request = Request::create('http://localhost?idemkey=11111', 'POST');
-        $request->headers->set('idemkey', "22222");
-        $controller = fn() => new JsonResponse(['no-cached-response']);
+        $request->headers->set('idemkey', '22222');
+        $controller = fn () => new JsonResponse(['no-cached-response']);
         $event = new ControllerEvent($this->kernel, $controller, $request, 1);
 
-        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . "-api-11111--22222";
-        $this->container->method('get')->with(CustomTestingExtractor::class)->willThrowException(new ServiceNotFoundException(''));
-        $this->cache->method('get')->with($idCache, fn() => null)->willReturn(new JsonResponse(['cached-response']));
+        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . '-api-11111--22222';
+        $this->container->method('get')
+            ->with(CustomTestingExtractor::class)->willThrowException(new ServiceNotFoundException(''));
+        $this->cache->method('get')
+            ->with($idCache, fn () => null)
+            ->willReturn(new JsonResponse(['cached-response']));
 
         $this->dispatcher->dispatch($event, 'onKernelController');
-        $this->assertEquals("cached", $event->getRequest()->headers->get($idCache));
+        $this->assertEquals('cached', $event->getRequest()->headers->get($idCache));
         $this->assertTrue($event->isPropagationStopped());
         $this->assertNotSame($controller, $event->getController());
+    }
+
+    private function getDefaultListener(
+        ?string $name = null,
+        ?array  $methods = null,
+        ?string $scope = null,
+        ?string $location = null,
+        ?string $extractorService = null,
+        ?bool   $mandatory = null,
+    ) {
+        return new ControllerListener(
+            [
+                'name' => $name ?? 'api',
+                'methods' => $methods ?? ['POST', 'PUT', 'DELETE'],
+                'scope' => $scope ?? 'query',
+                'location' => $location ?? 'idemkey',
+                'extractor' => $extractorService ?? null,
+                'mandatory' => $mandatory ?? false,
+            ],
+            $this->container
+        );
     }
 }

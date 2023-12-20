@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Model\Exceptions;
@@ -9,10 +10,13 @@ class IdempotentKeyIsMandatoryException extends \Exception
 {
     public function __construct(
         IdempotencyConfig $config
-    )
-    {
+    ) {
         parent::__construct(
-            sprintf('[Idempotency-bundle] Key "%s" in "%s" scope is mandatory', $config->getLocation(), $config->getScope())
+            sprintf(
+                '[Idempotency-bundle] Key "%s" in "%s" scope is mandatory',
+                $config->getLocation(),
+                $config->getScope()
+            )
         );
     }
 }

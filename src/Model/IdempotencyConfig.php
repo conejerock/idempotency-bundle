@@ -1,10 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Model;
-
-use Conejerock\IdempotencyBundle\Extractor\ScopesNormalizer;
-use Symfony\Component\HttpFoundation\Request;
 
 class IdempotencyConfig
 {
@@ -15,8 +13,7 @@ class IdempotencyConfig
         private string  $location,
         private ?string $extractorService,
         private bool    $mandatory,
-    )
-    {
+    ) {
     }
 
     public static function fromValues(array $values): self
@@ -27,7 +24,7 @@ class IdempotencyConfig
             $values['scope'],
             $values['location'],
             $values['extractor'] ?? null,
-            (bool)$values['mandatory'],
+            (bool) $values['mandatory'],
         );
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Conejerock\IdempotencyBundle\Tests\DependencyInjection;
@@ -11,18 +12,13 @@ class ConfigurationTest extends TestCase
 {
     use ConfigurationTestCaseTrait;
 
-    protected function getConfiguration(): Configuration
-    {
-        return new Configuration();
-    }
-
     public function testMinimalConfigurationRequired(): void
     {
         $this->assertConfigurationIsInvalid([]);
         $this->assertConfigurationIsValid([
             [
-                'name' => 'api'
-            ]
+                'name' => 'api',
+            ],
         ]);
     }
 
@@ -45,7 +41,6 @@ class ConfigurationTest extends TestCase
 
     public function testInvalidMethod()
     {
-
         $config = [
             'name' => 'api',
             'methods' => ['INVALID_METHOD'],
@@ -72,5 +67,10 @@ class ConfigurationTest extends TestCase
         ];
 
         $this->assertConfigurationIsValid([$config]);
+    }
+
+    protected function getConfiguration(): Configuration
+    {
+        return new Configuration();
     }
 }
