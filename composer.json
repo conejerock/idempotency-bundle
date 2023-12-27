@@ -20,7 +20,7 @@
     "type": "symfony-bundle",
     "require": {
         "php": ">=8.1",
-        "symfony/framework-bundle": "5.0.*"
+        "symfony/framework-bundle": ">=5.0.*"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "5.0.*",
