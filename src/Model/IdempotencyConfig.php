@@ -13,6 +13,7 @@ class IdempotencyConfig
         private string  $location,
         private ?string $extractorService,
         private bool    $mandatory,
+        private array   $endpoints,
     ) {
     }
 
@@ -25,6 +26,7 @@ class IdempotencyConfig
             $values['location'],
             $values['extractor'] ?? null,
             (bool) $values['mandatory'],
+            $values['endpoints'],
         );
     }
 
@@ -39,6 +41,14 @@ class IdempotencyConfig
     public function getMethods(): array
     {
         return $this->methods;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getEndpoints(): array
+    {
+        return $this->endpoints;
     }
 
     public function getScope(): string
