@@ -12,7 +12,12 @@ use Conejerock\IdempotencyBundle\Resources\Constants;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
 
 class ControllerListener
 {
@@ -31,6 +36,10 @@ class ControllerListener
     public function onIdempotentController(ControllerEvent $event)
     {
         if (! $this->ensureMethods($event)) {
+            return;
+        }
+
+        if (!$this->ensureEndpoints($event)) {
             return;
         }
 
@@ -60,6 +69,27 @@ class ControllerListener
         }
         return true;
     }
+
+    public function ensureEndpoints(ControllerEvent $event): bool
+    {
+        $configEndpoints = $this->config->getEndpoints();
+        if(empty($configEndpoints)) {
+            return true;
+        }
+        $routes = new RouteCollection();
+        array_map(fn(string $endpoint) => $routes->add($endpoint, new Route($endpoint)), $configEndpoints);
+        $context = new RequestContext();
+        $context->fromRequest($event->getRequest());
+        $matcher = new UrlMatcher($routes, $context);
+
+        try {
+             $matcher->match($event->getRequest()->getPathInfo());
+        }catch(ResourceNotFoundException $ex){
+            return false;
+        }
+        return true;
+    }
+
 
     public function getKeyValue(ControllerEvent $event): ?string
     {

@@ -154,6 +154,50 @@ class ControllerListenerTest extends TestCase
         $this->assertNotSame($controller, $event->getController());
     }
 
+    public function testReturnCachedByFilterEndpoint(): void
+    {
+        $listener = $this->getDefaultListener(
+            endpoints: ['/my-endpoint']
+        );
+        $this->dispatcher->addListener('onKernelController', [$listener, 'onIdempotentController']);
+
+        $request = Request::create('http://localhost/my-endpoint?idemkey=11111', 'POST');
+        $controller = fn () => new JsonResponse(['no-cached-response']);
+        $event = new ControllerEvent($this->kernel, $controller, $request, 1);
+
+        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . '-api-11111';
+        $this->cache->method('get')
+            ->with($idCache, fn () => null)
+            ->willReturn(new JsonResponse(['cached-response']));
+
+        $this->dispatcher->dispatch($event, 'onKernelController');
+        $this->assertEquals('cached', $event->getRequest()->headers->get($idCache));
+        $this->assertTrue($event->isPropagationStopped());
+        $this->assertNotSame($controller, $event->getController());
+    }
+
+    public function testReturnNullByNonFilterEndpoint(): void
+    {
+        $listener = $this->getDefaultListener(
+            endpoints: ['/my-endpoint']
+        );
+        $this->dispatcher->addListener('onKernelController', [$listener, 'onIdempotentController']);
+
+        $request = Request::create('http://localhost/this-other-endpoint?idemkey=11111', 'POST');
+        $controller = fn () => new JsonResponse(['no-cached-response']);
+        $event = new ControllerEvent($this->kernel, $controller, $request, 1);
+
+        $idCache = Constants::PREFIX_INNER_IDEMPOTENT_KEY . '-api-11111';
+        $this->cache->method('get')
+            ->with($idCache, fn () => null)
+            ->willReturn(new JsonResponse(['cached-response']));
+
+        $this->dispatcher->dispatch($event, 'onKernelController');
+        $this->assertNull($event->getRequest()->headers->get($idCache));
+        $this->assertFalse($event->isPropagationStopped());
+        $this->assertSame($controller, $event->getController());
+    }
+
     private function getDefaultListener(
         ?string $name = null,
         ?array  $methods = null,
@@ -161,6 +205,7 @@ class ControllerListenerTest extends TestCase
         ?string $location = null,
         ?string $extractorService = null,
         ?bool   $mandatory = null,
+        ?array  $endpoints = null,
     ) {
         return new ControllerListener(
             [
@@ -170,6 +215,7 @@ class ControllerListenerTest extends TestCase
                 'location' => $location ?? 'idemkey',
                 'extractor' => $extractorService ?? null,
                 'mandatory' => $mandatory ?? false,
+                'endpoints' => $endpoints ?? [],
             ],
             $this->container
         );

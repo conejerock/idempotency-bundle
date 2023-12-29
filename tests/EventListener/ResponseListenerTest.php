@@ -86,6 +86,7 @@ class ResponseListenerTest extends TestCase
             );
 
         $this->dispatcher->dispatch($event, 'onKernelResponse');
+        $this->dispatcher->dispatch($event, 'onKernelController');
         $this->assertEquals('false', $event->getResponse()->headers->get(Constants::X_HEADER_CACHED_REQUEST));
         $this->assertSame($cachedResponse, $event->getResponse());
     }
