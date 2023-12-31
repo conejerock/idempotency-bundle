@@ -34,6 +34,7 @@ class ConfigurationTest extends TestCase
             'scope' => 'headers',
             'location' => 'idempotency-key',
             'mandatory' => false,
+            'endpoints' => [],
         ];
 
         $this->assertProcessedConfigurationEquals([$config], $expectedConfig);
