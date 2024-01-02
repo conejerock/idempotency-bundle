@@ -38,8 +38,7 @@ class Configuration implements ConfigurationInterface
         $node->isRequired()
             ->info('Name of idempotency key used to identify')
             ->cannotBeEmpty()
-            ->example('api')
-            ->end();
+            ->example('api');
         return $node;
     }
 
@@ -51,7 +50,6 @@ class Configuration implements ConfigurationInterface
             ->validate()->ifNotInArray(['POST', 'PUT', 'PATCH', 'DELETE', 'GET', 'OPTIONS'])->thenInvalid('Invalid method - "%s"')->end()
             ->info('Allowed http methods: "POST", "PUT", "PATCH", "DELETE", "GET", "OPTIONS"')
             ->example(['PATCH', 'PUT'])
-            ->end()
             ->end();
         return $node;
     }
@@ -63,7 +61,6 @@ class Configuration implements ConfigurationInterface
             ->scalarPrototype()
             ->info('URL pattern to apply bundle (https://symfony.com/doc/current/reference/formats/expression_language.html)')
             ->example(['/articles/'])
-            ->end()
             ->end();
         return $node;
     }
@@ -73,7 +70,7 @@ class Configuration implements ConfigurationInterface
         $node = new ScalarNodeDefinition('extractor');
         $node->info(
             'Name of extractor service. It must be a class that inherits from "Conejerock\IdempotencyBundle\Extractor\AbastractExtrator". This will override "scope" attribute'
-        )->end();
+        );
         return $node;
     }
 
@@ -84,8 +81,7 @@ class Configuration implements ConfigurationInterface
             ->info('Scope from which the information will be extracted')
             ->values(['body', 'query', 'headers'])
             ->defaultValue('headers')
-            ->example('headers')
-            ->end();
+            ->example('headers');
         return $node;
     }
 
@@ -95,8 +91,7 @@ class Configuration implements ConfigurationInterface
         $node
             ->info('Location path to locate the idempotent key')
             ->example('field.nested.value')
-            ->defaultValue('idempotency-key')
-            ->end();
+            ->defaultValue('idempotency-key');
         return $node;
     }
 
@@ -106,8 +101,7 @@ class Configuration implements ConfigurationInterface
         $node
             ->info('Throw exception if idempotent key is mandatory')
             ->defaultFalse()
-            ->example('false')
-            ->end();
+            ->example('false');
         return $node;
     }
 }

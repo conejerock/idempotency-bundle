@@ -2,7 +2,7 @@
     "name": "conejerock/idempotency-bundle",
     "description": "Check idempotency keys in headers/body/query requests",
     "license": "MIT",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "authors": [
         {
             "name": "Juanjo Conejero",
@@ -20,8 +20,8 @@
     ],
     "type": "symfony-bundle",
     "require": {
-        "php": ">=7.4",
-        "symfony/framework-bundle": "*"
+        "php": ">=8.1",
+        "symfony/framework-bundle": "^7.0"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "5.0.*",
