@@ -2,7 +2,7 @@
     "name": "conejerock/idempotency-bundle",
     "description": "Check idempotency keys in headers/body/query requests",
     "license": "MIT",
-    "version": "dev-main",
+    "version": "1.0.5",
     "authors": [
         {
             "name": "Juanjo Conejero",
