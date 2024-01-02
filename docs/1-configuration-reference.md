@@ -97,3 +97,16 @@ Host: localhost:80
 Connection: Keep-Alive
 ```
 Then, **response** will be failed with status 500
+
+
+## Endpoints
+If the `endpoints` option is empty, it will be applied to all paths in the project. If it is set, it will be applied only to the paths specified in this option.
+```yaml
+# config/packages/idempotency.yaml
+idempotency:
+    name: api
+    endpoints: ['/webhook/idempotent-endpoint']
+    scope: 'body'
+    location: 'event.object.response.idempotent_key'
+    mandatory: true
+```

@@ -23,9 +23,11 @@ The bulk of the documentation is stored in the [./docs](./docs/index.md) directo
     * [Configuration](./docs/index.md#configuration)
 * [Further documentation](./docs/index.rst#further-documentation)
     * [Configuration reference](./docs/1-configuration-reference.md)
-        * [Body scope](./docs/1-configuration-reference.md#body-scope)
-        * [Query scope](./docs/1-configuration-reference.md#query-scope)
-        * [Headers scope](./docs/1-configuration-reference.md#qheaders-scope)
+        * [Scopes](./docs/1-configuration-reference.md)
+          * [Body scope](./docs/1-configuration-reference.md#body-scope)
+          * [Query scope](./docs/1-configuration-reference.md#query-scope)
+          * [Headers scope](./docs/1-configuration-reference.md#headers-scope)
+        * [Endpoints](./docs/1-configuration-reference.md#endpoints)
     * [Custom extractor](./docs/2-custom-extractor.md)
 
 
